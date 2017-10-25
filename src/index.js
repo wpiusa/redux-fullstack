@@ -1,4 +1,4 @@
-//DELETE
+//UPDATE
 
 "use strict"
 import {createStore} from 'redux';
@@ -20,6 +20,33 @@ const reducer = function(state={books:[]}, action){
 		  	books:[...currentBookToDelete.slice(0,indexToDelete), ...currentBookToDelete.slice(indexToDelete + 1)]
 		   }
 		   break;
+		case "UPDATE_BOOK" :
+		   const currentBookToUpdate = [...state.books] ;
+		   const indexToUpdate = currentBookToUpdate.findIndex(function(book){
+		   	 return book.id === action.payload.id;
+		   });
+
+			// Create a new book object with the new values and with the same array index of the
+			//item we want to replace. To achieve this we will use ...spread but we could use concat
+			//methos too
+
+			const newBookToUpdate = {
+			  ...currentBookToUpdate[indexToUpdate],
+			  title: action.payload.title
+			}  
+
+			// This Log has the purpose to show you how newBookToUpdate looks like
+            console.log("what is it newBookToUpdate",newBookToUpdate);
+            //use slice to remove the book at the specified index, replace with the new object
+            //and concatenate witht he rest of items in the array
+			return {
+				    books:
+				      [
+				        ...currentBookToUpdate.slice(0,indexToUpdate), newBookToUpdate,
+				        ...currentBookToUpdate.slice(indexToUpdate +1)
+				      ]
+				   }
+			break;
 	}
 		return state
 }
@@ -50,8 +77,11 @@ store.dispatch({
 })
 
 //-------------------------------------------
-//DELETE a book
+//UPDATE a book
 store.dispatch({
-	type: 'DELETE_BOOK',
-	payload: {id:1}
+	type: 'UPDATE_BOOK',
+	payload: {
+     id:2,
+     title: 'Learn React in 24h'
+    }
 })
